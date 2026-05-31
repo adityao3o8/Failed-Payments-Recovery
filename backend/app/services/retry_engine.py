@@ -8,9 +8,11 @@ from app.database import (
     DeclineCategory,
     Payment,
     PaymentAttempt,
+    PaymentRail,
     PaymentStatus,
 )
 from app.services.decline_classifier import DeclineType, classify_decline
+from app.services.upi_classifier import classify_upi_failure
 
 
 def _map_decline_type_to_category(decline_type: DeclineType) -> DeclineCategory:
@@ -25,7 +27,10 @@ def _map_decline_type_to_category(decline_type: DeclineType) -> DeclineCategory:
 
 def schedule_retry(db: Session, payment: Payment, decline_code: str | None) -> Payment:
     """Evaluate decline and schedule next retry if appropriate."""
-    info = classify_decline(decline_code)
+    if payment.payment_rail == PaymentRail.UPI:
+        info = classify_upi_failure(decline_code)
+    else:
+        info = classify_decline(decline_code)
 
     payment.decline_code = decline_code or info.code
     payment.decline_category = _map_decline_type_to_category(info.decline_type)

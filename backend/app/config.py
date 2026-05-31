@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     stripe_secret_key: str = ""
     stripe_webhook_secret: str = ""
+    razorpay_webhook_secret: str = ""
     max_retries: int = 4
     default_retry_enabled: bool = True
 

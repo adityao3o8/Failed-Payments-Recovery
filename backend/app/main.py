@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router as api_router
 from app.database import Base, engine
+from app.webhooks.razorpay import router as razorpay_router
 from app.webhooks.stripe import router as webhook_router
 
 
@@ -31,6 +32,7 @@ app.add_middleware(
 
 app.include_router(api_router)
 app.include_router(webhook_router)
+app.include_router(razorpay_router)
 
 
 @app.get("/health")
